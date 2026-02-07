@@ -1,0 +1,6 @@
+react
+react-dom
+axios
+typescript
+@types/react
+@types/react-dom
