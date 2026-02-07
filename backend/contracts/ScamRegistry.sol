@@ -67,23 +67,20 @@ contract ScamRegistry {
     /// @return totalReports       Total number of reports
     /// @return highRiskReports    Number of HIGH risk reports
     /// @return mediumRiskReports  Number of MEDIUM risk reports
-    /// @return lastUpdated        Timestamp of last report
     function getReport(bytes32 callerHash)
         external
         view
         returns (
             uint256 totalReports,
             uint256 highRiskReports,
-            uint256 mediumRiskReports,
-            uint256 lastUpdated
+            uint256 mediumRiskReports
         )
     {
         CallerStats storage s = stats[callerHash];
         return (
             s.totalReports,
             s.highRiskReports,
-            s.mediumRiskReports,
-            s.lastUpdated
+            s.mediumRiskReports
         );
     }
 }
