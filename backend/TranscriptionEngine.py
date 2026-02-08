@@ -3,17 +3,21 @@ import whisper
 
 MODEL = whisper.load_model("base")
 
-def transcribe(call_id: int) -> str:
+def transcribe(call_id):
     """
     Takes a call_id, loads tmp/{call_id}.wav, transcribes it,
     and returns the transcription as a string.
     """
+    print(f"tmp/{call_id}.wav")
+    print("hi")
     if os.path.exists(f"tmp/{call_id}.m4a"):
+        print("1")
         wav_path = f"tmp/{call_id}.m4a"
     elif os.path.exists(f"tmp/{call_id}.mp3"):
         wav_path = f"tmp/{call_id}.mp3"
     elif os.path.exists(f"tmp/{call_id}.wav"):
         wav_path = f"tmp/{call_id}.wav"
+        print("1")
     elif os.path.exists(f"tmp/{call_id}.ogg"):
         wav_path = f"tmp/{call_id}.ogg"
     else:
@@ -25,5 +29,5 @@ def transcribe(call_id: int) -> str:
 
 # Example usage
 if __name__ == "__main__":
-    text = transcribe(12345)
+    text = transcribe("94cf8c56042daba52dcbed3bbf876a37")
     print(text)

@@ -4,9 +4,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pathlib import Path
 import secrets
-from TranscriptionEngine import transcribe
-from ScamAnalysisEngine import classify_call
-from blockchain.scam_registry import get_caller_stats, submit_caller_report
+from backend.TranscriptionEngine import transcribe
+from backend.ScamAnalysisEngine import classify_call
+from backend.blockchain.scam_registry import get_caller_stats, submit_caller_report
 app = FastAPI(title="ScamScan Backend")
 
 # CORS for local dev; adjust in prod

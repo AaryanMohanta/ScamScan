@@ -16,11 +16,13 @@ const CallAnalysisPage: React.FC = () => {
   const [result, setResult] = useState<AnalyseResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>();
+  const [audioPhoneError, setAudioPhoneError] = useState<string | undefined>();
 
   const resetState = () => {
     setResult(null);
     setCallId(null);
     setError(undefined);
+    setAudioPhoneError(undefined);
   };
 
   // Upload only; analysis happens when SCAN NOW is pressed
@@ -335,13 +337,16 @@ const CallAnalysisPage: React.FC = () => {
                     color: "rgba(255,255,255,0.7)",
                   }}
                 >
-                  Optional: Caller phone number
+                  Caller phone number (required)
                 </label>
                 <input
                   type="tel"
                   placeholder="+1 555 123 4567"
                   value={audioPhoneNumber}
-                  onChange={(e) => setAudioPhoneNumber(e.target.value)}
+                  onChange={(e) => {
+                    setAudioPhoneNumber(e.target.value);
+                    if (audioPhoneError) setAudioPhoneError(undefined);
+                  }}
                   style={{
                     width: "100%",
                     padding: "0.6rem 0.8rem",
@@ -350,9 +355,20 @@ const CallAnalysisPage: React.FC = () => {
                     backgroundColor: "rgba(10,25,47,0.7)",
                     color: "white",
                     fontSize: 14,
-                    marginBottom: "1rem",
+                    marginBottom: "0.5rem",
                   }}
                 />
+                {audioPhoneError && (
+                  <p
+                    style={{
+                      color: "#FF4C4C",
+                      fontSize: 12,
+                      marginBottom: "0.75rem",
+                    }}
+                  >
+                    {audioPhoneError}
+                  </p>
+                )}
 
                 <button
                   type="button"
@@ -379,11 +395,20 @@ const CallAnalysisPage: React.FC = () => {
                   }}
                   onClick={async () => {
                     if (!callId) return;
+
+                    // Enforce phone number as required
+                    if (!audioPhoneNumber.trim()) {
+                      setAudioPhoneError(
+                        "Please enter the caller's phone number before scanning."
+                      );
+                      return;
+                    }
+
                     setLoading(true);
                     setError(undefined);
                     try {
-                      // For now, we ignore audioPhoneNumber in the call;
-                      // later you can extend analyseCall(...) to accept it.
+                      // For now, analyseCall only takes callId;
+                      // later you can extend it to send phone number too.
                       const analysis = await analyseCall(callId);
                       setResult(analysis);
                     } catch (err: any) {
