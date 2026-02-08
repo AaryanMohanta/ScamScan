@@ -25,7 +25,7 @@ def transcribe(call_id):
         raise FileNotFoundError(f"Audio file not found: {call_id}")
     
     print("12")
-    result = MODEL.transcribe(r"C:\Users\m_bha\ScamScan\backend\tmp\12345.m4a")
+    result = MODEL.transcribe(r"C:\Users\m_bha\ScamScan\backend\tmp\HighRisk.m4a")
     return result["text"].strip()
 
 

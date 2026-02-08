@@ -8,47 +8,46 @@ interface Props {
 
 const AnalysisResult: React.FC<Props> = ({ result }) => {
   const { scam_score, risk_level, transcript } = result;
-  const scorePercent = Math.round(scam_score * 100);
+  const scorePercent = Math.round((scam_score ?? 0) * 100);
 
-  // Determine state from score
-  let containerBg = "#E8F5E9"; // low default
+  // Normalize risk level
+  const level = (risk_level || "LOW").toUpperCase() as "LOW" | "MEDIUM" | "HIGH";
+
+  // Palette + content by level
+  let containerBg = "#E8F5E9";
   let borderColor = "#388E3C";
   let headlineColor = "#388E3C";
   let headlineText = "SAFE / VERIFIED";
   let explanationText =
-    "No threats detected. This number appears consistent with normal behaviour and there is no history of spam reports.";
+    "No threats detected. This call appears consistent with normal behaviour and there is no history of spam reports.";
   let emoji = "🛡️";
 
-  if (scorePercent >= 75) {
-    // High risk
+  if (level === "HIGH") {
     containerBg = "#FFF5F5";
     borderColor = "#D32F2F";
     headlineColor = "#D32F2F";
     headlineText = "CRITICAL THREAT";
     explanationText =
-      "Do not engage. This call matches patterns from known scam scripts, including high-pressure tactics and requests for sensitive information.";
+      "Do not engage. This call matches patterns from known scam scripts, including high‑pressure tactics and requests for sensitive information.";
     emoji = "⚠️";
-  } else if (scorePercent >= 30) {
-    // Medium risk
+  } else if (level === "MEDIUM") {
     containerBg = "#FFF8E1";
     borderColor = "#F57C00";
     headlineColor = "#F57C00";
     headlineText = "POTENTIALLY SUSPICIOUS";
     explanationText =
-      "Proceed with caution. Some language and behaviour in this call resemble common spam or social engineering attempts.";
+      "Proceed with caution. Some language and behaviour resemble common spam or social‑engineering attempts.";
     emoji = "👁️";
   }
 
   return (
     <section
       style={{
-        // Hero section wrapper
         background: "transparent",
         color: "#111827",
         fontFamily: "Inter, system-ui, sans-serif",
       }}
     >
-      {/* Hero verdict block */}
       <div
         style={{
           backgroundColor: containerBg,
@@ -59,10 +58,8 @@ const AnalysisResult: React.FC<Props> = ({ result }) => {
           boxShadow: "0 18px 40px rgba(0,0,0,0.25)",
         }}
       >
-        {/* Optional icon */}
         <div style={{ fontSize: "2.5rem", marginBottom: "0.75rem" }}>{emoji}</div>
 
-        {/* Big verdict text */}
         <h2
           style={{
             fontSize: "3rem",
@@ -76,7 +73,6 @@ const AnalysisResult: React.FC<Props> = ({ result }) => {
           {headlineText}
         </h2>
 
-        {/* Explanation text */}
         <p
           style={{
             fontSize: "1.125rem",
@@ -89,7 +85,6 @@ const AnalysisResult: React.FC<Props> = ({ result }) => {
           {explanationText}
         </p>
 
-        {/* Small meta info: score + level */}
         <div
           style={{
             display: "flex",
@@ -105,7 +100,8 @@ const AnalysisResult: React.FC<Props> = ({ result }) => {
               padding: "0.25rem 0.7rem",
               borderRadius: 999,
               backgroundColor: "rgba(15, 23, 42, 0.06)",
-              fontFamily: "JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas",
+              fontFamily:
+                "JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas",
             }}
           >
             SCORE: {scorePercent}/100
@@ -118,12 +114,11 @@ const AnalysisResult: React.FC<Props> = ({ result }) => {
               textTransform: "uppercase",
             }}
           >
-            Model verdict: {risk_level}
+            Model verdict: {level}
           </span>
         </div>
       </div>
 
-      {/* OPTIONAL: Transcript preview below hero */}
       {transcript && (
         <div
           style={{
