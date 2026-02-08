@@ -1,4 +1,3 @@
-# backend/compile_contract.py
 import json
 import os
 from solcx import compile_standard, set_solc_version
