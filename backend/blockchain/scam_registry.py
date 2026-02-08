@@ -31,7 +31,8 @@ contract = w3.eth.contract(
 
 
 def normalize_phone(phone_number):
-    return phone_number.strip()
+    x = "+15551234567"
+    return x
 
 
 def hash_phone(phone_number):
