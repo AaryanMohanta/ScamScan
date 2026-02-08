@@ -10,20 +10,22 @@ def transcribe(call_id):
     """
     print(f"tmp/{call_id}.wav")
     print("hi")
-    if os.path.exists(f"tmp/{call_id}.m4a"):
+    print(os.getcwd())
+    if os.path.exists(f"backend/tmp/{call_id}.m4a"):
         print("1")
         wav_path = f"tmp/{call_id}.m4a"
-    elif os.path.exists(f"tmp/{call_id}.mp3"):
+    elif os.path.exists(f"backend/tmp/{call_id}.mp3"):
         wav_path = f"tmp/{call_id}.mp3"
-    elif os.path.exists(f"tmp/{call_id}.wav"):
-        wav_path = f"tmp/{call_id}.wav"
+    elif os.path.exists(f"backend/tmp/{call_id}.wav"):
+        wav_path = f"backend/tmp/{call_id}.wav"
         print("1")
-    elif os.path.exists(f"tmp/{call_id}.ogg"):
+    elif os.path.exists(f"backend/tmp/{call_id}.ogg"):
         wav_path = f"tmp/{call_id}.ogg"
     else:
         raise FileNotFoundError(f"Audio file not found: {call_id}")
-
-    result = MODEL.transcribe(wav_path)
+    
+    print("12")
+    result = MODEL.transcribe(r"C:\Users\m_bha\ScamScan\backend\tmp\12345.m4a")
     return result["text"].strip()
 
 
