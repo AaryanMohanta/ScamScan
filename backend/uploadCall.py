@@ -4,7 +4,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pathlib import Path
 import secrets
-
+from TranscriptionEngine import transcribe
+from ScamAnalysisEngine import classify_call
+from blockchain.scam_registry import get_caller_stats, submit_caller_report
 app = FastAPI(title="ScamScan Backend")
 
 # CORS for local dev; adjust in prod
@@ -71,11 +73,19 @@ async def analyse_call(call_id: str, payload: AnalysePayload | None = None):
         raise HTTPException(status_code=404, detail="Audio not found for call_id.")
     audio_path = matches[0]
 
+    if classify_call(transcribe(call_id), get_caller_stats(payload.phone_number)["total_reports"], get_caller_stats(payload.phone_number)["high_risk_reports"], get_caller_stats(payload.phone_number)["medium_risk_reports"]) == 0:
+        quandale = "Low"
+        submit_caller_report(payload.phone_number, 0)
+    elif classify_call(transcribe(call_id), get_caller_stats(payload.phone_number)["total_reports"], get_caller_stats(payload.phone_number)["high_risk_reports"], get_caller_stats(payload.phone_number)["medium_risk_reports"]) == 1:
+        quandale = "Medium"
+        submit_caller_report(payload.phone_number, 1)
+    else:
+        quandale = "High"
+        submit_caller_report(payload.phone_number, 2)
+
+
     # TODO: replace with real analysis
     return {
-        "transcript": f"(mock) Analysed {audio_path.name}"
-                     + (f" | Caller: {payload.phone_number}" if payload and payload.phone_number else ""),
-        "scam_score": 0.1,
-        "risk_level": "LOW",
-        "advice": "No strong indicators detected in this mock response."
+        "transcript": transcribe(call_id),
+        "risk_level": quandale
     }
