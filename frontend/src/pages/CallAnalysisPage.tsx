@@ -43,6 +43,7 @@ const CallAnalysisPage: React.FC = () => {
     resetState();
     setLoading(true);
     try {
+      // TODO: replace with real number-analysis API
       const mock: AnalyseResult = {
         transcript: `Number: ${phoneNumber}\n(Mock analysis – implement later.)`,
         scam_score: 0.75,
@@ -60,34 +61,246 @@ const CallAnalysisPage: React.FC = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#0A192F", color: "white", fontFamily: "Inter, system-ui, sans-serif" }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "#0A192F",
+        color: "white",
+        fontFamily: "Inter, system-ui, sans-serif",
+      }}
+    >
       {/* Header */}
-      {/*... keep your header as-is... */}
+      <header
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "1rem 2rem",
+          borderBottom: "1px solid rgba(255,255,255,0.08)",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <div
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: "50%",
+              border: "2px solid #64FFDA",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontWeight: 700,
+              fontSize: 14,
+            }}
+          >
+            S
+          </div>
+          <span style={{ fontWeight: 700, letterSpacing: "0.08em" }}>
+            ScamScan
+          </span>
+        </div>
 
-      <main style={{ maxWidth: 1024, margin: "0 auto", padding: "3rem 1.5rem 4rem" }}>
+        <nav style={{ display: "flex", gap: "1.5rem", fontSize: 14 }}>
+          <button
+            style={{
+              background: "transparent",
+              border: "none",
+              color: "white",
+              cursor: "pointer",
+            }}
+          >
+            Login
+          </button>
+          <button
+            style={{
+              background: "transparent",
+              border: "1px solid rgba(255,255,255,0.3)",
+              borderRadius: 999,
+              padding: "0.3rem 0.9rem",
+              color: "white",
+              cursor: "pointer",
+              fontSize: 13,
+            }}
+          >
+            API Docs
+          </button>
+        </nav>
+      </header>
+
+      {/* Main */}
+      <main
+        style={{
+          maxWidth: 1024,
+          margin: "0 auto",
+          padding: "3rem 1.5rem 4rem",
+        }}
+      >
         {/* Hero */}
-        {/*... keep your hero as-is... */}
+        <section style={{ textAlign: "center", marginBottom: "2.5rem" }}>
+          <h1
+            style={{
+              fontSize: "2.4rem",
+              marginBottom: "0.8rem",
+              fontWeight: 700,
+            }}
+          >
+            Is that call safe? Verify it instantly.
+          </h1>
+          <p
+            style={{
+              fontSize: "0.98rem",
+              color: "rgba(255,255,255,0.75)",
+              maxWidth: 520,
+              margin: "0 auto",
+            }}
+          >
+            AI-powered risk analysis for audio recordings and phone numbers.
+          </p>
+        </section>
 
+        {/* Input + Result grid */}
         <section
           style={{
             display: "grid",
-            gridTemplateColumns: result ? "minmax(0, 1.15fr) minmax(0, 1.6fr)" : "minmax(0, 1fr)",
+            gridTemplateColumns: result
+              ? "minmax(0, 1.15fr) minmax(0, 1.6fr)"
+              : "minmax(0, 1fr)",
             gap: "2rem",
             alignItems: "stretch",
           }}
         >
-          <div style={{ backgroundColor: "#0F2238", borderRadius: 16, padding: "1.8rem 1.6rem", boxShadow: "0 18px 40px rgba(0,0,0,0.4)" }}>
+          {/* Input card */}
+          <div
+            style={{
+              backgroundColor: "#0F2238",
+              borderRadius: 16,
+              padding: "1.8rem 1.6rem",
+              boxShadow: "0 18px 40px rgba(0,0,0,0.4)",
+            }}
+          >
             {/* Tabs */}
-            {/*... keep your tabs as-is... */}
+            <div
+              style={{
+                display: "flex",
+                marginBottom: "1.5rem",
+                borderRadius: 999,
+                padding: 4,
+                backgroundColor: "rgba(15,35,60,0.9)",
+              }}
+            >
+              <button
+                onClick={() => {
+                  setActiveTab("number");
+                  resetState();
+                }}
+                style={{
+                  flex: 1,
+                  borderRadius: 999,
+                  border: "none",
+                  padding: "0.5rem 0.8rem",
+                  cursor: "pointer",
+                  fontSize: 14,
+                  fontWeight: 500,
+                  backgroundColor:
+                    activeTab === "number" ? "#64FFDA" : "transparent",
+                  color: activeTab === "number" ? "#0A192F" : "#ffffff",
+                  transition: "all 0.15s ease",
+                }}
+              >
+                Check Number
+              </button>
+              <button
+                onClick={() => {
+                  setActiveTab("audio");
+                  resetState();
+                }}
+                style={{
+                  flex: 1,
+                  borderRadius: 999,
+                  border: "none",
+                  padding: "0.5rem 0.8rem",
+                  cursor: "pointer",
+                  fontSize: 14,
+                  fontWeight: 500,
+                  backgroundColor:
+                    activeTab === "audio" ? "#64FFDA" : "transparent",
+                  color: activeTab === "audio" ? "#0A192F" : "#ffffff",
+                  transition: "all 0.15s ease",
+                }}
+              >
+                Analyze Audio
+              </button>
+            </div>
 
+            {/* Tab content */}
             {activeTab === "number" ? (
-              /*... number tab unchanged... */
               <form onSubmit={handleNumberScan}>
-                {/*... */}
+                <label
+                  style={{
+                    display: "block",
+                    textAlign: "left",
+                    marginBottom: "0.4rem",
+                    fontSize: 13,
+                    color: "rgba(255,255,255,0.7)",
+                  }}
+                >
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  placeholder="+1 555 123 4567"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "0.6rem 0.8rem",
+                    borderRadius: 999,
+                    border: "1px solid rgba(255,255,255,0.2)",
+                    backgroundColor: "rgba(10,25,47,0.7)",
+                    color: "white",
+                    fontSize: 14,
+                    marginBottom: "1rem",
+                  }}
+                  required
+                />
+
+                <button
+                  type="submit"
+                  disabled={loading || !phoneNumber}
+                  style={{
+                    marginTop: "0.5rem",
+                    width: "100%",
+                    padding: "0.75rem",
+                    borderRadius: 999,
+                    border: "none",
+                    background:
+                      loading || !phoneNumber
+                        ? "rgba(100,255,218,0.4)"
+                        : "#64FFDA",
+                    color: "#0A192F",
+                    fontWeight: 600,
+                    letterSpacing: "0.05em",
+                    cursor: loading || !phoneNumber ? "default" : "pointer",
+                    boxShadow:
+                      !loading && phoneNumber
+                        ? "0 0 18px rgba(100,255,218,0.4)"
+                        : "none",
+                    transition: "all 0.15s ease",
+                  }}
+                >
+                  {loading ? "SCANNING..." : "SCAN NOW"}
+                </button>
               </form>
             ) : (
               <div>
-                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", marginBottom: "0.7rem", textAlign: "left" }}>
+                <p
+                  style={{
+                    fontSize: 13,
+                    color: "rgba(255,255,255,0.7)",
+                    marginBottom: "0.7rem",
+                    textAlign: "left",
+                  }}
+                >
                   Upload call recording (.mp3,.wav)
                 </p>
                 <div
@@ -97,17 +310,31 @@ const CallAnalysisPage: React.FC = () => {
                     padding: "1.5rem 1rem",
                     marginBottom: "1rem",
                     textAlign: "center",
-                    background: "linear-gradient(135deg, rgba(100,255,218,0.08), rgba(10,25,47,0.9))",
+                    background:
+                      "linear-gradient(135deg, rgba(100,255,218,0.08), rgba(10,25,47,0.9))",
                   }}
                 >
                   <FileUpload onFileSelected={handleFileSelected} />
-                  {/* Small status helper */}
-                  <p style={{ fontSize: 12, color: "rgba(255,255,255,0.6)", marginTop: "0.5rem" }}>
+                  <p
+                    style={{
+                      fontSize: 12,
+                      color: "rgba(255,255,255,0.6)",
+                      marginTop: "0.5rem",
+                    }}
+                  >
                     {callId ? "File uploaded ✓" : "No file uploaded"}
                   </p>
                 </div>
 
-                <label style={{ display: "block", textAlign: "left", marginBottom: "0.4rem", fontSize: 13, color: "rgba(255,255,255,0.7)" }}>
+                <label
+                  style={{
+                    display: "block",
+                    textAlign: "left",
+                    marginBottom: "0.4rem",
+                    fontSize: 13,
+                    color: "rgba(255,255,255,0.7)",
+                  }}
+                >
                   Optional: Caller phone number
                 </label>
                 <input
@@ -136,12 +363,18 @@ const CallAnalysisPage: React.FC = () => {
                     padding: "0.75rem",
                     borderRadius: 999,
                     border: "none",
-                    background: loading || !callId ? "rgba(100,255,218,0.4)" : "#64FFDA",
+                    background:
+                      loading || !callId
+                        ? "rgba(100,255,218,0.4)"
+                        : "#64FFDA",
                     color: "#0A192F",
                     fontWeight: 600,
                     letterSpacing: "0.05em",
                     cursor: loading || !callId ? "default" : "pointer",
-                    boxShadow: !loading && callId ? "0 0 18px rgba(100,255,218,0.4)" : "none",
+                    boxShadow:
+                      !loading && callId
+                        ? "0 0 18px rgba(100,255,218,0.4)"
+                        : "none",
                     transition: "all 0.15s ease",
                   }}
                   onClick={async () => {
@@ -149,9 +382,9 @@ const CallAnalysisPage: React.FC = () => {
                     setLoading(true);
                     setError(undefined);
                     try {
-                      const analysis = await analyseCall(callId, {
-                        phoneNumber: audioPhoneNumber || undefined,
-                      });
+                      // For now, we ignore audioPhoneNumber in the call;
+                      // later you can extend analyseCall(...) to accept it.
+                      const analysis = await analyseCall(callId);
                       setResult(analysis);
                     } catch (err: any) {
                       console.error(err);
@@ -167,17 +400,30 @@ const CallAnalysisPage: React.FC = () => {
             )}
 
             {loading && (
-              <p style={{ marginTop: "0.8rem", fontSize: 12, color: "rgba(255,255,255,0.6)" }}>
+              <p
+                style={{
+                  marginTop: "0.8rem",
+                  fontSize: 12,
+                  color: "rgba(255,255,255,0.6)",
+                }}
+              >
                 Checking databases… analysing patterns… verifying signals…
               </p>
             )}
             {error && (
-              <p style={{ marginTop: "0.8rem", color: "#FF4C4C", fontSize: 13 }}>
+              <p
+                style={{
+                  marginTop: "0.8rem",
+                  color: "#FF4C4C",
+                  fontSize: 13,
+                }}
+              >
                 {error}
               </p>
             )}
           </div>
 
+          {/* Result panel */}
           {result && (
             <div>
               <AnalysisResult result={result} />
