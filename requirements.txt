@@ -46,13 +46,7 @@ typing-inspection==0.4.2
 typing_extensions==4.15.0
 urllib3==2.6.3
 websockets==15.0.1
-react
-react-dom
-axios
-typescript
 fastapi==0.128.4
 uvicorn[standard]
 python-multipart
 pydantic>=2.12.5
-@types/react
-@types/react-dom

@@ -110,15 +110,15 @@ def classify_call(
     total_logs: int,
     medium_flags: int,
     high_flags: int,
-    candidate_models: List[str] = None,
-    list_models_if_none_available: bool = False
+    #candidate_models: List[str] = None,
+    #list_models_if_none_available: bool = False
 ) -> str:
     """
     Return exactly one character string: '0', '1', or '2'.
     Attempts an ordered list of models. Falls back deterministically if needed.
     """
     prompt = _build_prompt(transcript, total_logs, medium_flags, high_flags)
-    models_to_try = candidate_models or CANDIDATE_MODELS
+    models_to_try = CANDIDATE_MODELS
 
     last_error = None
     # Try each candidate model until one works and returns an exact label
@@ -141,8 +141,8 @@ def classify_call(
 
     # If we get here, all model attempts failed or returned invalid outputs.
     # Optionally return a list of available models somewhere for troubleshooting.
-    if list_models_if_none_available:
-        available = list_available_models()
+    #if list_models_if_none_available:
+    #    available = list_available_models()
         # we don't print this to stdout because the user requested exactly one character output.
         # but we could optionally log to stderr or a file — for now we ignore printing.
         # (If you want to debug, run list_available_models() in an interactive session)
