@@ -6,157 +6,153 @@ interface Props {
   result: AnalyseResult;
 }
 
+const LEVEL_CONFIG = {
+  LOW: {
+    label: "Safe / Verified",
+    emoji: "🛡️",
+    color: "var(--safe)",
+    dim: "var(--safe-dim)",
+    border: "rgba(52,211,153,0.2)",
+    glow: "rgba(52,211,153,0.08)",
+  },
+  MEDIUM: {
+    label: "Potentially Suspicious",
+    emoji: "👁️",
+    color: "var(--warning)",
+    dim: "var(--warning-dim)",
+    border: "rgba(255,176,32,0.2)",
+    glow: "rgba(255,176,32,0.08)",
+  },
+  HIGH: {
+    label: "Critical Threat",
+    emoji: "⚠️",
+    color: "var(--danger)",
+    dim: "var(--danger-dim)",
+    border: "rgba(255,77,106,0.25)",
+    glow: "rgba(255,77,106,0.1)",
+  },
+};
+
 const AnalysisResult: React.FC<Props> = ({ result }) => {
-  const { scam_score, risk_level, transcript } = result;
+  const { scam_score, risk_level, transcript, advice } = result;
+  const level = (risk_level || "LOW").toUpperCase() as keyof typeof LEVEL_CONFIG;
+  const cfg = LEVEL_CONFIG[level] ?? LEVEL_CONFIG.LOW;
   const scorePercent = Math.round((scam_score ?? 0) * 100);
 
-  // Normalize risk level
-  const level = (risk_level || "LOW").toUpperCase() as "LOW" | "MEDIUM" | "HIGH";
-
-  // Palette + content by level
-  let containerBg = "#E8F5E9";
-  let borderColor = "#388E3C";
-  let headlineColor = "#388E3C";
-  let headlineText = "SAFE / VERIFIED";
-  let explanationText =
-    "No threats detected. This call appears consistent with normal behaviour and there is no history of spam reports.";
-  let emoji = "🛡️";
-
-  if (level === "HIGH") {
-    containerBg = "#FFF5F5";
-    borderColor = "#D32F2F";
-    headlineColor = "#D32F2F";
-    headlineText = "CRITICAL THREAT";
-    explanationText =
-      "Do not engage. This call matches patterns from known scam scripts, including high‑pressure tactics and requests for sensitive information.";
-    emoji = "⚠️";
-  } else if (level === "MEDIUM") {
-    containerBg = "#FFF8E1";
-    borderColor = "#F57C00";
-    headlineColor = "#F57C00";
-    headlineText = "POTENTIALLY SUSPICIOUS";
-    explanationText =
-      "Proceed with caution. Some language and behaviour resemble common spam or social‑engineering attempts.";
-    emoji = "👁️";
-  }
-
   return (
-    <section
-      style={{
-        background: "transparent",
-        color: "#111827",
-        fontFamily: "Inter, system-ui, sans-serif",
-      }}
-    >
-      <div
-        style={{
-          backgroundColor: containerBg,
-          borderRadius: 24,
-          border: `3px solid ${borderColor}`,
-          padding: "2.5rem 2rem",
-          textAlign: "center",
-          boxShadow: "0 18px 40px rgba(0,0,0,0.25)",
-        }}
-      >
-        <div style={{ fontSize: "2.5rem", marginBottom: "0.75rem" }}>{emoji}</div>
+    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
 
-        <h2
-          style={{
-            fontSize: "3rem",
-            fontWeight: 900,
-            letterSpacing: "-0.02em",
-            margin: "0 0 1rem",
-            textTransform: "uppercase",
-            color: headlineColor,
-          }}
-        >
-          {headlineText}
-        </h2>
+      {/* Verdict card */}
+      <div style={{
+        background: "var(--surface-glass)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+        border: `1px solid ${cfg.border}`,
+        borderRadius: 20,
+        padding: "28px 26px",
+        boxShadow: `0 0 60px ${cfg.glow}, 0 20px 40px rgba(0,0,0,0.35)`,
+      }}>
+        {/* Top row: emoji + label */}
+        <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 16 }}>
+          <div style={{
+            width: 52, height: 52, borderRadius: 14,
+            background: cfg.dim,
+            border: `1px solid ${cfg.border}`,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: 24,
+          }}>
+            {cfg.emoji}
+          </div>
+          <div>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", color: "var(--text-muted)", textTransform: "uppercase", marginBottom: 4 }}>
+              Risk Assessment
+            </div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: cfg.color, letterSpacing: "-0.02em" }}>
+              {cfg.label}
+            </div>
+          </div>
+        </div>
 
-        <p
-          style={{
-            fontSize: "1.125rem",
-            lineHeight: 1.6,
-            color: "#374151",
-            maxWidth: 600,
-            margin: "0 auto 1.5rem",
-          }}
-        >
-          {explanationText}
-        </p>
+        {/* Advice */}
+        {advice && (
+          <p style={{ fontSize: 14, lineHeight: 1.65, color: "var(--text-muted)", margin: "0 0 20px" }}>
+            {advice}
+          </p>
+        )}
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "1.25rem",
-            flexWrap: "wrap",
-            fontSize: 13,
-            color: "#4B5563",
-          }}
-        >
-          <span
-            style={{
-              padding: "0.25rem 0.7rem",
+        {/* Score bar */}
+        <div style={{ marginBottom: 18 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+            <span style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 500 }}>Scam Probability</span>
+            <span style={{ fontSize: 12, fontWeight: 700, color: cfg.color }}>{scorePercent}%</span>
+          </div>
+          <div style={{
+            height: 6, borderRadius: 999,
+            background: "rgba(255,255,255,0.06)",
+            overflow: "hidden",
+          }}>
+            <div style={{
+              height: "100%",
+              width: `${scorePercent}%`,
               borderRadius: 999,
-              backgroundColor: "rgba(15, 23, 42, 0.06)",
-              fontFamily:
-                "JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas",
-            }}
-          >
-            SCORE: {scorePercent}/100
-          </span>
-          <span
-            style={{
-              padding: "0.25rem 0.7rem",
-              borderRadius: 999,
-              backgroundColor: "rgba(15, 23, 42, 0.06)",
-              textTransform: "uppercase",
-            }}
-          >
-            Model verdict: {level}
-          </span>
+              background: cfg.color,
+              boxShadow: `0 0 8px ${cfg.color}`,
+              transition: "width 0.8s ease",
+            }} />
+          </div>
+        </div>
+
+        {/* Pills */}
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <Pill label={`Score: ${scorePercent}/100`} active color={cfg.color} />
+          <Pill label={`Verdict: ${level}`} color={cfg.color} />
         </div>
       </div>
 
+      {/* Transcript */}
       {transcript && (
-        <div
-          style={{
-            marginTop: "1.75rem",
-            backgroundColor: "#0F2238",
-            borderRadius: 16,
-            padding: "1.25rem 1.5rem",
-            color: "white",
-            maxHeight: 220,
-            overflowY: "auto",
-            border: "1px solid rgba(255,255,255,0.12)",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: "0.75rem",
-              fontSize: 13,
-              color: "rgba(255,255,255,0.76)",
-            }}
-          >
-            <span>Call Transcript (preview)</span>
+        <div style={{
+          background: "var(--surface-glass)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
+          border: "1px solid var(--border)",
+          borderRadius: 16,
+          padding: "16px 18px",
+        }}>
+          <div style={{
+            fontSize: 11, fontWeight: 700, letterSpacing: "0.1em",
+            color: "var(--text-muted)", textTransform: "uppercase", marginBottom: 10,
+          }}>
+            Call Transcript
           </div>
-          <p
-            style={{
-              fontSize: 13,
-              lineHeight: 1.5,
-              whiteSpace: "pre-wrap",
-              color: "rgba(249,250,251,0.9)",
-            }}
-          >
+          <p style={{
+            fontSize: 13, lineHeight: 1.7, color: "rgba(240,235,255,0.8)",
+            margin: 0, whiteSpace: "pre-wrap",
+            fontFamily: "var(--mono)",
+            maxHeight: 180, overflowY: "auto",
+          }}>
             {transcript}
           </p>
         </div>
       )}
-    </section>
+    </div>
   );
 };
+
+const Pill: React.FC<{ label: string; color: string; active?: boolean }> = ({ label, color, active }) => (
+  <span style={{
+    display: "inline-block",
+    padding: "5px 13px",
+    borderRadius: 999,
+    fontSize: 11,
+    fontWeight: 700,
+    letterSpacing: "0.06em",
+    background: active ? `${color}22` : "rgba(255,255,255,0.05)",
+    border: `1px solid ${active ? `${color}44` : "rgba(255,255,255,0.07)"}`,
+    color: active ? color : "var(--text-muted)",
+  }}>
+    {label}
+  </span>
+);
 
 export default AnalysisResult;

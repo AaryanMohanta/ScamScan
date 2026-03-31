@@ -6,4 +6,15 @@ export default defineConfig({
   server: {
     proxy: { "/api": "http://localhost:8000" },
   },
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: ["./src/tests/setup.ts"],
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "lcov"],
+      include: ["src/**/*.{ts,tsx}"],
+      exclude: ["src/tests/**", "src/main.tsx"],
+    },
+  },
 });
