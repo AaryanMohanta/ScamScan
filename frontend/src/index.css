@@ -1,61 +1,57 @@
+*, *::before, *::after { box-sizing: border-box; }
+
 :root {
-  background-color: #0a192f;
+  --bg:           #0F0A1E;
+  --bg-2:         #13092A;
+  --surface:      #160F2E;
+  --surface-2:    #1C1240;
+  --surface-glass: rgba(22, 15, 46, 0.75);
+
+  --accent:       #8B5CF6;
+  --accent-2:     #EC4899;
+  --accent-grad:  linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+  --accent-dim:   rgba(139, 92, 246, 0.14);
+  --accent-glow:  rgba(139, 92, 246, 0.4);
+  --pink-dim:     rgba(236, 72, 153, 0.12);
+
+  --danger:       #FF4D6A;
+  --danger-dim:   rgba(255, 77, 106, 0.12);
+  --warning:      #FFB020;
+  --warning-dim:  rgba(255, 176, 32, 0.12);
+  --safe:         #34D399;
+  --safe-dim:     rgba(52, 211, 153, 0.12);
+
+  --text:         #F0EBFF;
+  --text-muted:   #8B7FAD;
+  --border:       rgba(139, 92, 246, 0.15);
+  --border-soft:  rgba(255, 255, 255, 0.06);
+
+  --font:  "Inter", system-ui, -apple-system, sans-serif;
+  --mono:  "JetBrains Mono", "Fira Code", ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #0a192f; /* keep dark to avoid white rim */
-  }
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+html {
+  background: var(--bg);
 }
 
 body {
   margin: 0;
-  background: #0a192f;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+#root {
+  background: var(--bg);
+  min-height: 100vh;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
+a { color: var(--accent); text-decoration: none; }
+button { font-family: var(--font); cursor: pointer; }
+input { font-family: var(--font); }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.25); border-radius: 999px; }

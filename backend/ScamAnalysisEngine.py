@@ -12,13 +12,17 @@ Requirements:
 import re
 import os
 from typing import Optional, List
+from dotenv import load_dotenv
 
 from google import genai
 from google.genai import errors as genai_errors
 
-GEMINI_API_KEY = "AIzaSyAwl4mpuCoAtU6JR0_U5C890728GmgVLN4"
+load_dotenv()
 
-# Create client (will auto-pick up credentials from environment typically)
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    raise RuntimeError("GEMINI_API_KEY environment variable is not set")
+
 client = genai.Client(api_key=GEMINI_API_KEY)
 
 # Candidate models to try (ordered). Update or reorder if you have other preferred models.
